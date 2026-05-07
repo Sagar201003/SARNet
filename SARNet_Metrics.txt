@@ -1,0 +1,61 @@
+=========================================================
+SARNET - FINAL EVALUATION METRICS
+=========================================================
+
+---------------------------------------------------------
+1. CycleGAN (SAR to Optical Translation)
+---------------------------------------------------------
+Best Model Checkpoint: Epoch 54
+Evaluated Samples: 200
+
+* PSNR (Peak Signal-to-Noise Ratio):
+  - Mean : 11.2137 dB
+  - Std  : 2.4121
+
+* SSIM (Structural Similarity Index):
+  - Mean : 0.0944
+  - Std  : 0.0849
+
+Loss Functions Used:
+- Adversarial Loss: Least Squares GAN (MSELoss)
+- Cycle Consistency Loss: L1 Loss (Weight = 10.0)
+- Structural Similarity (SSIM) Loss: Custom SSIM (Weight = 2.0)
+- Identity Loss: Disabled (Weight = 0.0)
+
+Hyperparameters:
+- Epochs: 100
+- Batch Size: 8
+- Optimizer: Adam (LR = 2e-4, Beta1 = 0.5, Beta2 = 0.999)
+
+---------------------------------------------------------
+2. Terrain Classifier (ResNet-18)
+---------------------------------------------------------
+Training Subset: 2,000 images
+Validation Subset: 200 images
+
+Validation Accuracy Progress:
+Epoch 1/15  | Val Acc: 92.00%
+Epoch 2/15  | Val Acc: 94.50%
+Epoch 3/15  | Val Acc: 96.50%
+Epoch 4/15  | Val Acc: 96.50%
+Epoch 5/15  | Val Acc: 96.50%
+Epoch 6/15  | Val Acc: 97.00%
+Epoch 7/15  | Val Acc: 97.50%
+Epoch 8/15  | Val Acc: 97.50%
+Epoch 9/15  | Val Acc: 97.00%
+Epoch 10/15 | Val Acc: 97.50%
+Epoch 11/15 | Val Acc: 98.00%
+Epoch 12/15 | Val Acc: 97.50%
+Epoch 13/15 | Val Acc: 98.50%  <-- Peak Accuracy
+Epoch 14/15 | Val Acc: 98.50%  <-- Peak Accuracy
+Epoch 15/15 | Val Acc: 97.50%
+
+Loss Function Used:
+- Cross-Entropy Loss
+
+Hyperparameters:
+- Epochs: 15
+- Batch Size: 32
+- Optimizer: AdamW (LR = 1e-4, Weight Decay = 1e-2)
+- Dropout: 0.5 (50%)
+=========================================================
