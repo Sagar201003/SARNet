@@ -1,6 +1,6 @@
 # 🛰️ SARNet: SAR to Optical Image Translation & Terrain Classification
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](#) *(**Demo Link:** Insert your deployed Streamlit link here)*
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://sar-net.streamlit.app/) *(**Demo Link:** [https://sar-net.streamlit.app/](https://sar-net.streamlit.app/))*
 
 SARNet is an end-to-end Deep Learning pipeline designed to bridge the gap between radar and optical satellite imagery. It utilizes a **CycleGAN** architecture to translate grayscale Synthetic Aperture Radar (SAR - Sentinel-1) imagery into colorized optical imagery (Sentinel-2). Furthermore, it passes the generated optical image into a downstream **ResNet-18 Classifier** to automatically categorize the terrain.
 
