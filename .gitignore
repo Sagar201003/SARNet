@@ -1,0 +1,14 @@
+# Environments
+sarnet_env/
+venv/
+.venv/
+__pycache__/
+
+# Large Models and Zips
+*.zip
+Results/Epochs/BestModelWeights/
+best_model.pth
+
+# Keep inference models
+!inference_model.pth
+!subset_optical_classifier.pth
