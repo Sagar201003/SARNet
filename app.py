@@ -16,7 +16,7 @@ st.set_page_config(
 )
 
 # Constants
-CHECKPOINT_PATH = "results/epochs/inference_model.pth"
+CHECKPOINT_PATH = "Results/Epochs/inference_model.pth"
 CLASSIFIER_PATH = "Results/Epochs/subset_optical_classifier.pth"
 SAMPLE_IMAGE_PATH = "assets/sample_sar.png"
 CLASS_NAMES = ['agri', 'barrenland', 'grassland', 'urban']
