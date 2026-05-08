@@ -53,6 +53,10 @@ def main():
     st.title("🛰️ SARNet: SAR to Optical Image Translation")
     st.markdown("Convert grayscale Synthetic Aperture Radar (SAR) imagery into colorized optical imagery using CycleGAN and classify the terrain type.")
 
+    # Initialize session state for persisting results across reruns
+    if "has_results" not in st.session_state:
+        st.session_state.has_results = False
+
     # Sidebar
     with st.sidebar:
         st.header("SARNet Settings")
@@ -87,7 +91,7 @@ def main():
                 st.subheader("Input SAR Image")
                 st.image(input_image, use_column_width=True)
             
-            # Action button
+            # Action button — run inference and store results in session state
             if st.button("Translate and Classify", type="primary"):
                 generator, discriminator, classifier = load_models()
                 
@@ -114,7 +118,9 @@ def main():
                         # 3. Classify the generated optical image
                         pred_class_name = "N/A"
                         confidence = 0.0
+                        has_classifier = False
                         if classifier is not None:
+                            has_classifier = True
                             # Preprocess for Classifier
                             classifier_transform = transforms.Compose([
                                 transforms.Resize((224, 224)),
@@ -132,38 +138,49 @@ def main():
                         else:
                             st.warning(f"Optical Classifier not found at {CLASSIFIER_PATH}. Skipping classification.")
 
-                    with col2:
-                        st.subheader("Output Optical Image")
-                        st.image(output_image, use_column_width=True)
-                        
-                        # Download button
-                        buf = io.BytesIO()
-                        output_image.save(buf, format="PNG")
-                        byte_im = buf.getvalue()
-                        st.download_button(
-                            label="Download Result",
-                            data=byte_im,
-                            file_name="translated_optical.png",
-                            mime="image/png",
-                            use_container_width=True
-                        )
-                        
-                    # Metrics & Results
-                    st.divider()
-                    st.subheader("Analysis Results")
+                    # Store all results in session state so they persist across reruns
+                    buf = io.BytesIO()
+                    output_image.save(buf, format="PNG")
+                    st.session_state.output_image_bytes = buf.getvalue()
+                    st.session_state.realism_score = realism_score
+                    st.session_state.pred_class_name = pred_class_name
+                    st.session_state.confidence = confidence
+                    st.session_state.has_classifier = has_classifier
+                    st.session_state.has_results = True
+
+            # Display results from session state (persists across reruns)
+            if st.session_state.has_results:
+                output_image = Image.open(io.BytesIO(st.session_state.output_image_bytes))
+                
+                with col2:
+                    st.subheader("Output Optical Image")
+                    st.image(output_image, use_column_width=True)
                     
-                    # Classification Results
-                    if classifier is not None:
-                        st.info(f"📍 **Predicted Terrain Class:** {pred_class_name} (Confidence: {confidence*100:.1f}%)")
+                    # Download button
+                    st.download_button(
+                        label="Download Result",
+                        data=st.session_state.output_image_bytes,
+                        file_name="translated_optical.png",
+                        mime="image/png",
+                        use_container_width=True
+                    )
                     
-                    # Realism Score Display
-                    score_pct = realism_score * 100
-                    if score_pct >= 50:
-                        st.success(f"🤖 **Discriminator Realism Score:** {score_pct:.2f}% (Classified as REAL)")
-                    else:
-                        st.warning(f"🤖 **Discriminator Realism Score:** {score_pct:.2f}% (Classified as FAKE)")
-                        
-                    st.progress(realism_score)
+                # Metrics & Results
+                st.divider()
+                st.subheader("Analysis Results")
+                
+                # Classification Results
+                if st.session_state.has_classifier:
+                    st.info(f"📍 **Predicted Terrain Class:** {st.session_state.pred_class_name} (Confidence: {st.session_state.confidence*100:.1f}%)")
+                
+                # Realism Score Display
+                score_pct = st.session_state.realism_score * 100
+                if score_pct >= 50:
+                    st.success(f"🤖 **Discriminator Realism Score:** {score_pct:.2f}% (Classified as REAL)")
+                else:
+                    st.warning(f"🤖 **Discriminator Realism Score:** {score_pct:.2f}% (Classified as FAKE)")
+                    
+                st.progress(st.session_state.realism_score)
                     
         except Exception as e:
             st.error(f"Error processing image: {e}")
