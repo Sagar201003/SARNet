@@ -85,6 +85,16 @@ def main():
 
     if uploaded_file:
         try:
+            # Track current input — clear old results only when a new image is uploaded
+            if isinstance(uploaded_file, str):
+                current_input_id = uploaded_file  # sample image path
+            else:
+                current_input_id = f"{uploaded_file.name}_{uploaded_file.size}"
+            
+            if st.session_state.get("current_input_id") != current_input_id:
+                st.session_state.current_input_id = current_input_id
+                st.session_state.has_results = False
+
             # Display Input
             input_image = Image.open(uploaded_file).convert("RGB")
             with col1:
